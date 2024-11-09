@@ -1,0 +1,88 @@
+.example.myapplication;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText inputNumber;
+    private Spinner inputBase;
+    private Button convertButton;
+    private TextView outputResult;
+
+    private final String[] bases = {"Decimal", "Binary", "Octal", "Hexadecimal"};
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        inputNumber = findViewById(R.id.inputNumber);
+        inputBase = findViewById(R.id.inputBase);
+        convertButton = findViewById(R.id.convertButton);
+        outputResult = findViewById(R.id.outputResult);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, bases);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        inputBase.setAdapter(adapter);
+
+        convertButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                convertNumber();
+            }
+        });
+    }
+
+    private void convertNumber() {
+        String input = inputNumber.getText().toString().trim();
+        int base = inputBase.getSelectedItemPosition();
+        String result = "";
+
+        if (input.isEmpty()) {
+            outputResult.setText("Please enter a number.");
+            return;
+        }
+
+        try {
+            switch (base) {
+                case 0: // Decimal
+                    result += "Binary: " + Integer.toBinaryString(Integer.parseInt(input)) + "\n";
+                    result += "Octal: " + Integer.toOctalString(Integer.parseInt(input)) + "\n";
+                    result += "Hexadecimal: " + Integer.toHexString(Integer.parseInt(input)) + "\n";
+                    break;
+
+                case 1: // Binary
+                    int decimalFromBinary = Integer.parseInt(input, 2);
+                    result += "Decimal: " + decimalFromBinary + "\n";
+                    result += "Octal: " + Integer.toOctalString(decimalFromBinary) + "\n";
+                    result += "Hexadecimal: " + Integer.toHexString(decimalFromBinary) + "\n";
+                    break;
+
+                case 2: // Octal
+                    int decimalFromOctal = Integer.parseInt(input, 8);
+                    result += "Decimal: " + decimalFromOctal + "\n";
+                    result += "Binary: " + Integer.toBinaryString(decimalFromOctal) + "\n";
+                    result += "Hexadecimal: " + Integer.toHexString(decimalFromOctal) + "\n";
+                    break;
+
+                case 3: // Hexadecimal
+                    int decimalFromHex = Integer.parseInt(input, 16);
+                    result += "Decimal: " + decimalFromHex + "\n";
+                    result += "Binary: " + Integer.toBinaryString(decimalFromHex) + "\n";
+                    result += "Octal: " + Integer.toOctalString(decimalFromHex) + "\n";
+                    break;
+            }
+            outputResult.setText(result);
+        } catch (NumberFormatException e) {
+            outputResult.setText("Invalid input for the selected base.");
+        }
+    }
+}
