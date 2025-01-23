@@ -1,0 +1,10 @@
+// This is the Hello class which contains the main method.
+public class Hello {
+
+    // The main method is the entry point of the program.
+    public static void main(String[] args) {
+        // This line prints "hello word" to the console.
+        System.out.println("hello word");
+    }
+    
+}
